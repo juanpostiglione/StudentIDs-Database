@@ -1,12 +1,12 @@
 # Project Description
-This project is about designing and implementing a custom AVL tree to efficiently manage UF student accounts, uniquely identified by their GatorIDs. The core focus of the project lies in the development and integration of various methods pivotal to the functionality of an AVL tree data structure. These include:
+This project is about designing and implementing a custom AVL tree to efficiently manage student accounts, uniquely identified by their Student IDs. The core focus of the project lies in the development and integration of various methods pivotal to the functionality of an AVL tree data structure. These include:
 
 ## Insertion: 
 Efficiently adding new student accounts while maintaining the AVL tree's balanced nature.
 ## Deletion:
 Removing student accounts and rebalancing the tree as necessary to preserve its AVL properties.
 ## Search: 
-Implementing a robust search mechanism to quickly find student accounts using their GatorIDs.
+Implementing a robust search mechanism to quickly find student accounts using their Student IDs.
 ## Traversals: 
 Facilitating various tree traversal methods (inorder, preorder, postorder) to navigate through the student accounts.
 
