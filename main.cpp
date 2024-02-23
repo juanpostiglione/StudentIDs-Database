@@ -20,19 +20,25 @@ void processCommand(StudentTree*& root, const string& commandLine) {
     }
     /// PrintInorder command
     else if (command == "printInorder") {
-        root->printInOrder(root);
-        cout << endl;
+        ostringstream oss;
+        root->printInOrder(root, oss);
+        string output = oss.str();
+        cout <<output<< endl;
     }
 
     /// PrintPreorder command
     else if (command == "printPreorder") {
-        root->printPreOrder(root);
-        cout << endl;
+        ostringstream oss;
+        root->printPreOrder(root, oss);
+        string output = oss.str();
+        cout <<output<< endl;
     }
     /// PrintPostorder command
     else if (command == "printPostorder") {
-        root->printPostOrder(root);
-        cout << endl;
+        ostringstream oss;
+        root->printPostOrder(root, oss);
+        string output = oss.str();
+        cout <<output<< endl;
     }
 
     /// PrintLevelCount command
@@ -45,7 +51,6 @@ void processCommand(StudentTree*& root, const string& commandLine) {
     else if (command == "remove") {
         string idStr;
         iss >> idStr;
-        cout<<"successful" << endl;
         root = root->removeID(root, idStr);
     }
 
@@ -53,7 +58,6 @@ void processCommand(StudentTree*& root, const string& commandLine) {
     else if (command == "removeInorder") {
         int n;
         iss >> n;
-        cout<<"successful" << endl;
         root->removeNthInorder(root, n);
     }
 
@@ -74,11 +78,11 @@ void processCommand(StudentTree*& root, const string& commandLine) {
             root->searchID(root, query);
         }
 
-        // Else, calls searchName
+            // Else, calls searchName
         else {
             root->searchName(root, query);
         }
-        cout << endl;
+
     } else {
         cout << "unsuccessful" << endl;
     }
