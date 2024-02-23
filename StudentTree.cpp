@@ -1,6 +1,8 @@
 #include "StudentTree.h"
 #include<queue>
 #include<stack>
+#include<sstream>
+#include <algorithm>
 
 
 /// Student Constructor
@@ -8,7 +10,7 @@ Student::Student(string name, string id): name(name), id(id){
 }
 
 /// StudentTree Constructor
-StudentTree::StudentTree(Student data): data(data), right(nullptr), left(nullptr), height(1){
+StudentTree::StudentTree(Student data): data(data), height(1), right(nullptr),left(nullptr){
 }
 
 /// Function to get the height
@@ -63,6 +65,19 @@ StudentTree* StudentTree::rightRotation(StudentTree *root){
 
 /// Insert Function
 StudentTree* StudentTree::insert(StudentTree* root, Student student) {
+    // Check if the name contains numeric characters
+    if (!all_of(student.name.begin(), student.name.end(), ::isalpha)) {
+        cout << "unsuccessful" << endl;
+        return root;
+    }
+
+        // Check if the id contains only numeric characters
+    else if(student.id.length() != 8 || !all_of(student.id.begin(), student.id.end(), ::isdigit)){
+        cout << "unsuccessful" << endl;
+        return root;
+    }
+
+    // Continue with the insertion process if the name is valid
     if (root == nullptr) {
         cout << "successful" << endl;
         return new StudentTree(student);
@@ -104,55 +119,64 @@ StudentTree* StudentTree::insert(StudentTree* root, Student student) {
 
     return root;
 }
-
 /// Helper for print in order
-void StudentTree::printInOrderHelper(StudentTree* root, bool& first) {
+void StudentTree::printInOrderHelper(StudentTree* root, bool& first, ostringstream& oss) {
     if (root != nullptr) {
-        printInOrderHelper(root->left, first);
+        printInOrderHelper(root->left, first, oss);
         if (!first) {
-            cout << ", ";
+            oss << ", ";
         } else {
             first = false;
         }
-        cout << root->data.name;
-        printInOrderHelper(root->right, first);
+        oss << root->data.name;
+        printInOrderHelper(root->right, first, oss);
     }
 }
 
 /// Print in order, now reset the boolean
-void StudentTree::printInOrder(StudentTree* root) {
+void StudentTree::printInOrder(StudentTree* root, ostringstream& oss) {
     bool first = true;
-    printInOrderHelper(root, first);
+    printInOrderHelper(root, first, oss);
 }
 
-/// Print in Pre Order
-void StudentTree::printPreOrder(StudentTree *root) {
-    static bool first = true;
+/// Helper of print pre Pre Order
+void StudentTree::printPreOrderHelper(StudentTree *root, bool& first, ostringstream& oss) {
     if (root != nullptr) {
         if (!first) {
-            cout << ", ";
+            oss << ", ";
         } else {
             first = false;
         }
-        cout << root->data.name;
-        printPreOrder(root->left);
-        printPreOrder(root->right);
+        oss << root->data.name;
+        printPreOrderHelper(root->left, first, oss);
+        printPreOrderHelper(root->right, first, oss);
     }
 }
 
-/// Print in Post Order
-void StudentTree::printPostOrder(StudentTree *root) {
-    static bool first = true;
+/// Print pre order, now reset the boolean
+void StudentTree::printPreOrder(StudentTree* root, ostringstream& oss) {
+    bool first = true;
+    printPreOrderHelper(root, first, oss);
+}
+
+/// Helper for print in Post Order
+void StudentTree::printPostOrderHelper(StudentTree *root, bool& first, ostringstream& oss) {
     if (root != nullptr) {
-        printPostOrder(root->left);
-        printPostOrder(root->right);
+        printPostOrderHelper(root->left, first, oss);
+        printPostOrderHelper(root->right, first, oss);
         if (!first) {
-            cout << ", ";
+            oss << ", ";
         } else {
             first = false;
         }
-        cout << root->data.name;
+        oss << root->data.name;
     }
+}
+
+/// Print post order, now reset the boolean
+void StudentTree::printPostOrder(StudentTree* root, ostringstream& oss) {
+    bool first = true;
+    printPostOrderHelper(root, first, oss);
 }
 
 /// Print Levels
@@ -162,49 +186,52 @@ void StudentTree::printLevels(StudentTree *root) {
     }
     queue<StudentTree*> levels;
     levels.push(root);
-    int levelCount = 0;
+    int currentLevelCount = 0; // Rename the variable to avoid shadowing
     while(!levels.empty())
     {
         int levelSize = levels.size();
 
         for(int i = 0; i < levelSize;i++){
-            StudentTree* Node = levels.front();
+            StudentTree* node = levels.front();
             levels.pop();
 
-            if(Node->left != nullptr){
-                levels.push(Node->left);
+            if(node->left != nullptr){
+                levels.push(node->left);
             }
-            if(Node->right != nullptr){
-                levels.push(Node->right);
+            if(node->right != nullptr){
+                levels.push(node->right);
             }
         }
-        levelCount++;
+        currentLevelCount++;
     }
-    cout<<levelCount;
+    cout<<currentLevelCount;
 }
+
 
 /// Search for ID
-void StudentTree::searchID(StudentTree *root, std::string id) {
+void StudentTree::searchID(StudentTree *root, std::string searchId) {
     if(root == nullptr){
-        cout<<"unsuccessful";
+        cout<<"unsuccessful" << endl;
         return;
     }
-    if(stoi(id) < stoi(root->data.id)){
-        searchID(root->left,id);
+    if(stoi(searchId) < stoi(root->data.id)){
+        searchID(root->left, searchId);
     }
-    else if(stoi(id) > stoi(root->data.id)){
-        searchID(root->right,id);
+    else if(stoi(searchId) > stoi(root->data.id)){
+        searchID(root->right, searchId);
     }
     else{
-        cout<<root->data.name;
+        cout<<root->data.name << endl;
         return;
     }
 }
 
+
+
 /// Search for Name
-void StudentTree::searchName(StudentTree *root, string name) {
+void StudentTree::searchName(StudentTree *root, string searchName) {
     if (root == nullptr) {
-        cout << "unsuccessful";
+        cout << "unsuccessful"<<endl;
         return;
     }
 
@@ -217,7 +244,7 @@ void StudentTree::searchName(StudentTree *root, string name) {
         StudentTree* current = names.top();
         names.pop();
 
-        if (current->data.name == name) {
+        if (current->data.name == searchName) {
             output += current->data.id + "\n";
             found = true;
         }
@@ -231,28 +258,27 @@ void StudentTree::searchName(StudentTree *root, string name) {
         }
     }
     if (!found) {
-        cout << "unsuccessful";
+        cout << "unsuccessful"<<endl;
     } else {
         // Remove the trailing comma and space
         cout << output;
     }
 }
+
 /// Remove ID
-StudentTree* StudentTree::removeID(StudentTree* root, string id) {
+StudentTree* StudentTree::removeID(StudentTree* root, string removeId) {
     if (root == nullptr) {
         cout << "unsuccessful" << endl;
         return nullptr;
     }
 
     int nodeId = stoi(root->data.id);
-    int targetId = stoi(id);
-
-
+    int targetId = stoi(removeId);
 
     if (targetId < nodeId) {
-        root->left = removeID(root->left, id);
+        root->left = removeID(root->left, removeId);
     } else if (targetId > nodeId) {
-        root->right = removeID(root->right, id);
+        root->right = removeID(root->right, removeId);
     } else {
         // Node with only one child or no child
         if (root->left == nullptr || root->right == nullptr) {
@@ -266,6 +292,8 @@ StudentTree* StudentTree::removeID(StudentTree* root, string id) {
                 *root = *temp; // Copy the contents of the non-empty child
             }
             delete temp;
+            cout<<"successful" << endl;
+
         } else {
             // Node with two children: get the inorder successor
             StudentTree* temp = root->right;
@@ -312,7 +340,6 @@ StudentTree* StudentTree::removeID(StudentTree* root, string id) {
         root->right = rightRotation(root->right);
         return leftRotation(root);
     }
-
     return root;
 }
 
@@ -329,7 +356,7 @@ StudentTree* findNthInorder(StudentTree*& root, int& n) {
     if (n == 0) {
         return root;
     }
-    // Decrease n as we're still searching.
+    // Decrease n as we are still searching
     n--;
 
     return findNthInorder(root->right, n);
