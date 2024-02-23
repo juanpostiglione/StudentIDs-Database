@@ -31,16 +31,23 @@ struct StudentTree
     void printLevels(StudentTree *root);
 
     /// Helper for print in order function
-    void printInOrderHelper(StudentTree* root, bool& first);
+    void printInOrderHelper(StudentTree* root, bool& first, ostringstream& oss);
+
+    /// Helper for print pre order function
+    void printPreOrderHelper(StudentTree* root, bool& first, ostringstream& oss);
+
+    /// Helper for print post order function
+    void printPostOrderHelper(StudentTree* root, bool& first, ostringstream& oss);
+
 
     /// Print in order function
-    void printInOrder(StudentTree* root);
+    void printInOrder(StudentTree* root, ostringstream& oss);
 
     /// Print pre order function
-    void printPreOrder(StudentTree* root);
+    void printPreOrder(StudentTree* root, ostringstream& oss);
 
     /// Print post order function
-    void printPostOrder(StudentTree* root);
+    void printPostOrder(StudentTree* root, ostringstream& oss);
 
     /// Function for search ID
     void searchID(StudentTree *root, std::string id);
@@ -66,6 +73,5 @@ struct StudentTree
     /// Function to remove Nth Inorder
     void removeNthInorder(StudentTree*& root, int n);
 };
-
 
 
